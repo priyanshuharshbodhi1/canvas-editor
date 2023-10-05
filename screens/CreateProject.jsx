@@ -1,34 +1,35 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+} from "react-native";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function CreateProject({ navigation }) {
+  const [userText, setUserText] = useState("");
+
+  const textInputRef = useRef(null);
+
   const handleBack = () => {
     navigation.goBack();
   };
 
-  
-  const handleUndo = () => {
-    
-  };
+  const handleUndo = () => {};
 
-  
-  const handleRedo = () => {
-    
-  };
+  const handleRedo = () => {};
 
-  
-  const handleSave = () => {
-    
-  };
+  const handleSave = () => {};
 
   const handleText = () => {
-    
+    console.log("TEXT button pressed");
+    textInputRef.current.focus();
   };
 
   return (
     <View style={styles.container}>
-
       <View style={styles.topBar}>
         <TouchableOpacity onPress={handleBack}>
           <Text style={styles.button}>Back</Text>
@@ -46,6 +47,15 @@ export default function CreateProject({ navigation }) {
 
       <View style={styles.space} />
 
+      <TextInput
+        ref={textInputRef}
+        style={styles.textInput}
+        value={userText}
+        onChangeText={(text) => setUserText(text)}
+        placeholder="Type here..."
+        multiline={true}
+      />
+
       <TouchableOpacity style={styles.bottomBar} onPress={handleText}>
         <Text style={styles.bottomButton}>TEXT</Text>
       </TouchableOpacity>
@@ -54,10 +64,10 @@ export default function CreateProject({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'space-between',
-      },
+  container: {
+    flex: 1,
+    justifyContent: "space-between",
+  },
   topBar: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -76,14 +86,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   bottomBar: {
-    backgroundColor: 'grey',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "grey",
+    alignItems: "center",
+    justifyContent: "center",
     height: 50,
   },
   bottomButton: {
     fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
+    fontWeight: "bold",
+    color: "white",
   },
 });

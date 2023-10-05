@@ -14,8 +14,8 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="CreateProject" component={CreateProject} />
-        <Stack.Screen name="MyProjects" component={MyProject} />
+        <Stack.Screen name="Create a New Project" component={CreateProject} />
+        <Stack.Screen name="My Projects" component={MyProject} />
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
@@ -27,11 +27,11 @@ function HomeScreen({ navigation }) {
     <View style={styles.container}>
       <Button
         title="Create New"
-        onPress={() => navigation.navigate('CreateProject')}
+        onPress={() => navigation.navigate('Create a New Project')}
       />
       <Button
         title="My Projects"
-        onPress={() => navigation.navigate('MyProjects')}
+        onPress={() => navigation.navigate('My Projects')}
       />
     </View>
   );
