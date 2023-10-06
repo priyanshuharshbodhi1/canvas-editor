@@ -41,15 +41,19 @@ export default function CreateProject({ navigation }) {
     setTextInputs(updatedInputs);
   };
 
+  const handleRemoveTextInput = (index) => {
+    const updatedInputs = [...textInputs];
+    updatedInputs.splice(index, 1);
+    setTextInputs(updatedInputs);
+  };
+
   const createPanResponder = (index) => {
-    const pan = new Animated.ValueXY(); // Create a separate animated value for each TextInput
+    const pan = new Animated.ValueXY();
 
     return PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onMoveShouldSetPanResponder: () => true,
-      onPanResponderGrant: () => {
-        // You can add any logic here when the pan responder is granted.
-      },
+      onPanResponderGrant: () => {},
       onPanResponderMove: (_, gestureState) => {
         panResponderRefs.current[index].setNativeProps({
           style: {
@@ -99,6 +103,12 @@ export default function CreateProject({ navigation }) {
               placeholder="Type here..."
               multiline={true}
             />
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => handleRemoveTextInput(index)}
+            >
+              <Icon name="close" size={20} color="red" />
+            </TouchableOpacity>
           </Animated.View>
         ))}
       </ScrollView>
@@ -130,7 +140,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   textContainer: {
-    flex: 1,
+    // flex: 1,
   },
   textInputContainer: {
     alignItems: "center",
@@ -138,12 +148,21 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginRight: 10,
     marginBottom: 10,
+    position: "relative",
   },
   textInput: {
     borderWidth: 1.5,
     borderColor: "blue",
     fontSize: 18,
     paddingHorizontal: 10,
+  },
+  closeButton: {
+    // position: "absolute", 
+    // borderRadius: 50,
+    top: 0,
+    right: 0,
+    backgroundColor: "blue",
+    padding: 0,
   },
   bottomBar: {
     backgroundColor: "grey",
