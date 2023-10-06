@@ -1,17 +1,18 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   TextInput,
+  ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default function CreateProject({ navigation }) {
   const [userText, setUserText] = useState("");
-
-  const textInputRef = useRef(null);
+  const [textInputs, setTextInputs] = useState([]);
+  const textInputRefs = useRef([]);
 
   const handleBack = () => {
     navigation.goBack();
@@ -24,8 +25,17 @@ export default function CreateProject({ navigation }) {
   const handleSave = () => {};
 
   const handleText = () => {
-    console.log("TEXT button pressed");
-    textInputRef.current.focus();
+    setTextInputs([...textInputs, ""]);
+  };
+
+  const handleTextInputClick = (index) => {
+    textInputRefs.current[index].focus();
+  };
+
+  const handleTextInputChange = (text, index) => {
+    const updatedInputs = [...textInputs];
+    updatedInputs[index] = text;
+    setTextInputs(updatedInputs);
   };
 
   return (
@@ -45,16 +55,24 @@ export default function CreateProject({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.space} />
-
-      <TextInput
-        ref={textInputRef}
-        style={styles.textInput}
-        value={userText}
-        onChangeText={(text) => setUserText(text)}
-        placeholder="Type here..."
-        multiline={true}
-      />
+      <ScrollView>
+        {textInputs.map((text, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.textInputContainer}
+            onPress={() => handleTextInputClick(index)}
+          >
+            <TextInput
+              ref={(ref) => (textInputRefs.current[index] = ref)}
+              style={styles.textInput}
+              value={text}
+              onChangeText={(text) => handleTextInputChange(text, index)}
+              placeholder="Type here..."
+              multiline={true}
+            />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
 
       <TouchableOpacity style={styles.bottomBar} onPress={handleText}>
         <Text style={styles.bottomButton}>TEXT</Text>
@@ -82,8 +100,17 @@ const styles = StyleSheet.create({
     color: "grey",
     marginLeft: 10,
   },
-  space: {
-    flex: 1,
+  textInputContainer: {
+    alignItems: "center",
+    marginTop: 35,
+    marginLeft: 10,
+    marginRight: 10,
+  },
+  textInput: {
+    borderWidth: 1.5,
+    borderColor: "blue",
+    fontSize: 18,
+    paddingHorizontal: 10,
   },
   bottomBar: {
     backgroundColor: "grey",
