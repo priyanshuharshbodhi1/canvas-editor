@@ -6,6 +6,8 @@ import {
   StyleSheet,
   TextInput,
   ScrollView,
+  Animated,
+  PanResponder,
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
@@ -13,6 +15,7 @@ export default function CreateProject({ navigation }) {
   const [userText, setUserText] = useState("");
   const [textInputs, setTextInputs] = useState([]);
   const textInputRefs = useRef([]);
+  const panResponderRefs = useRef([]);
 
   const handleBack = () => {
     navigation.goBack();
@@ -38,6 +41,31 @@ export default function CreateProject({ navigation }) {
     setTextInputs(updatedInputs);
   };
 
+  const createPanResponder = (index) => {
+    const pan = new Animated.ValueXY(); // Create a separate animated value for each TextInput
+
+    return PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onMoveShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        // You can add any logic here when the pan responder is granted.
+      },
+      onPanResponderMove: (_, gestureState) => {
+        panResponderRefs.current[index].setNativeProps({
+          style: {
+            transform: [
+              { translateX: gestureState.dx },
+              { translateY: gestureState.dy },
+            ],
+          },
+        });
+      },
+      onPanResponderRelease: () => {
+        pan.flattenOffset();
+      },
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.topBar}>
@@ -55,12 +83,13 @@ export default function CreateProject({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <ScrollView>
+      <ScrollView style={styles.textContainer}>
         {textInputs.map((text, index) => (
-          <TouchableOpacity
+          <Animated.View
             key={index}
             style={styles.textInputContainer}
-            onPress={() => handleTextInputClick(index)}
+            {...createPanResponder(index).panHandlers}
+            ref={(ref) => (panResponderRefs.current[index] = ref)}
           >
             <TextInput
               ref={(ref) => (textInputRefs.current[index] = ref)}
@@ -70,7 +99,7 @@ export default function CreateProject({ navigation }) {
               placeholder="Type here..."
               multiline={true}
             />
-          </TouchableOpacity>
+          </Animated.View>
         ))}
       </ScrollView>
 
@@ -100,11 +129,15 @@ const styles = StyleSheet.create({
     color: "grey",
     marginLeft: 10,
   },
+  textContainer: {
+    flex: 1,
+  },
   textInputContainer: {
     alignItems: "center",
     marginTop: 35,
     marginLeft: 10,
     marginRight: 10,
+    marginBottom: 10,
   },
   textInput: {
     borderWidth: 1.5,
