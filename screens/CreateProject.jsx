@@ -11,7 +11,16 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-export default function CreateProject({ navigation }) {
+export default function CreateProject({ route, navigation }) {
+  // const { selectedProject } = route.params;
+
+  // const [panResponderPositions, setPanResponderPositions] = useState(
+  //   selectedProject ? selectedProject.positions : []
+  // );
+  const [projectNumber, setProjectNumber] = useState(1);
+
+  const [textInputCoordinates, setTextInputCoordinates] = useState([]);
+
   const [userText, setUserText] = useState("");
   const [textInputs, setTextInputs] = useState([]);
   const textInputRefs = useRef([]);
@@ -25,7 +34,27 @@ export default function CreateProject({ navigation }) {
 
   const handleRedo = () => {};
 
-  const handleSave = () => {};
+  const handleSave = async () => {
+    try {
+      const projectData = {
+        textInputs,
+        positions: panResponderPositions,
+        coordinates: textInputCoordinates, // Save the coordinates
+      };
+
+      const projectKey = `project${projectNumber}`;
+      await AsyncStorage.setItem(projectKey, JSON.stringify(projectData));
+
+      // Increment the project number for the next project
+      setProjectNumber(projectNumber + 1);
+
+      // Store the updated project number in AsyncStorage
+      await AsyncStorage.setItem('projectNumber', String(projectNumber));
+    } catch (error) {
+      console.error('Error saving project:', error);
+    }
+  }
+
 
   const handleText = () => {
     setTextInputs([...textInputs, ""]);
@@ -49,6 +78,13 @@ export default function CreateProject({ navigation }) {
 
   const createPanResponder = (index) => {
     const pan = new Animated.ValueXY();
+
+    pan.addListener((value) => {
+      // Update the coordinates in state
+      const updatedCoordinates = [...textInputCoordinates];
+      updatedCoordinates[index] = value;
+      setTextInputCoordinates(updatedCoordinates);
+    });
 
     return PanResponder.create({
       onStartShouldSetPanResponder: () => true,
@@ -157,7 +193,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   closeButton: {
-    // position: "absolute", 
+    // position: "absolute",
     // borderRadius: 50,
     top: 0,
     right: 0,

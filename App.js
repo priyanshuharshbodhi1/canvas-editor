@@ -15,23 +15,40 @@ export default function App() {
       <Stack.Navigator>
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Create a New Project" component={CreateProject} />
-        <Stack.Screen name="My Projects" component={MyProject} />
+        <Stack.Screen
+          name="My Projects" 
+          component={MyProject}
+          options={({ route }) => ({
+            title: 'My Projects',
+          })}
+        />
+        <Stack.Screen
+          name="CreateProject"
+          component={CreateProject}
+          options={({ route }) => ({
+            title: 'Create Project',
+            headerShown: false, // Adjust header visibility as needed
+            // Pass the selectedProject parameter if it's available
+            initialParams: route.params?.selectedProject
+              ? { selectedProject: route.params.selectedProject }
+              : undefined,
+          })}
+        />
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
   );
 }
-
 function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Button
         title="Create New"
-        onPress={() => navigation.navigate('Create a New Project')}
+        onPress={() => navigation.navigate("Create a New Project")}
       />
       <Button
         title="My Projects"
-        onPress={() => navigation.navigate('My Projects')}
+        onPress={() => navigation.navigate("My Projects")}
       />
     </View>
   );
@@ -42,6 +59,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
 });
